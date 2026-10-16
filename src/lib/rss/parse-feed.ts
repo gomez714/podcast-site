@@ -86,8 +86,14 @@ function parseItem(
 
   if (!sourceGuid) report("error", "guid", "Missing GUID; item skipped.");
   if (!title) report("error", "title", "Missing title; item skipped.");
-  if (!publishedAt) report("error", "pubDate", `Missing or invalid pubDate "${rawPubDate ?? ""}"; item skipped.`);
-  if (!audioUrl) report("error", "enclosure", `Missing or non-HTTPS enclosure URL "${rawAudioUrl ?? ""}"; item skipped.`);
+  if (!publishedAt)
+    report("error", "pubDate", `Missing or invalid pubDate "${rawPubDate ?? ""}"; item skipped.`);
+  if (!audioUrl)
+    report(
+      "error",
+      "enclosure",
+      `Missing or non-HTTPS enclosure URL "${rawAudioUrl ?? ""}"; item skipped.`,
+    );
   if (!sourceGuid || !title || !publishedAt || !audioUrl) return undefined;
 
   const audioMimeType = attr(item.enclosure, "type");

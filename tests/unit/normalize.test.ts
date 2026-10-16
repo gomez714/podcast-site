@@ -50,9 +50,9 @@ describe("parsePositiveInt", () => {
 
 describe("htmlToPlainText", () => {
   it("turns block elements and line breaks into newlines", () => {
-    expect(htmlToPlainText("<div>One<br><br><strong>Two<br>- </strong>three</div><div>Four</div>")).toBe(
-      "One\n\nTwo\n- three\nFour",
-    );
+    expect(
+      htmlToPlainText("<div>One<br><br><strong>Two<br>- </strong>three</div><div>Four</div>"),
+    ).toBe("One\n\nTwo\n- three\nFour");
   });
 
   it("decodes named and numeric entities", () => {

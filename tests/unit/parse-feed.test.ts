@@ -40,7 +40,8 @@ function item(fields: ItemFields = {}): string {
     f.episode !== null && `<itunes:episode>${f.episode}</itunes:episode>`,
     `<itunes:explicit>${f.explicit}</itunes:explicit>`,
     f.description !== undefined && `<description>${f.description}</description>`,
-    f.contentEncoded !== undefined && `<content:encoded><![CDATA[${f.contentEncoded}]]></content:encoded>`,
+    f.contentEncoded !== undefined &&
+      `<content:encoded><![CDATA[${f.contentEncoded}]]></content:encoded>`,
     "</item>",
   ]
     .filter(Boolean)
@@ -170,7 +171,9 @@ describe("parseFeed edge cases", () => {
   ] as const)("skips an item with missing/invalid %s and reports an error", (field, fields) => {
     const { episodes, issues } = parseFeed(feed(item(fields), item({ guid: "guid-2" })));
     expect(episodes.map((e) => e.sourceGuid)).toEqual(["guid-2"]);
-    expect(issues).toContainEqual(expect.objectContaining({ severity: "error", field, itemIndex: 0 }));
+    expect(issues).toContainEqual(
+      expect.objectContaining({ severity: "error", field, itemIndex: 0 }),
+    );
   });
 
   it.each([
@@ -218,7 +221,9 @@ describe("parseFeed edge cases", () => {
 
   it("falls back to an escaped <description> when content:encoded is absent", () => {
     const { episodes } = parseFeed(
-      feed(item({ description: "&lt;p&gt;Fish &amp;amp; chips&lt;/p&gt;&lt;p&gt;Second&lt;/p&gt;" })),
+      feed(
+        item({ description: "&lt;p&gt;Fish &amp;amp; chips&lt;/p&gt;&lt;p&gt;Second&lt;/p&gt;" }),
+      ),
     );
     expect(episodes[0].descriptionText).toBe("Fish & chips\nSecond");
   });

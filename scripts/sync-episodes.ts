@@ -13,7 +13,10 @@ const FIXTURE_PATH = path.join(process.cwd(), "tests", "fixtures", "fusebox-feed
 
 async function loadFeed(useFixture: boolean): Promise<{ xml: string; sourceUrl: string }> {
   if (useFixture) {
-    return { xml: await readFile(FIXTURE_PATH, "utf8"), sourceUrl: "tests/fixtures/fusebox-feed.xml" };
+    return {
+      xml: await readFile(FIXTURE_PATH, "utf8"),
+      sourceUrl: "tests/fixtures/fusebox-feed.xml",
+    };
   }
 
   const sourceUrl = process.env.PODCAST_RSS_URL ?? DEFAULT_PODCAST_RSS_URL;
@@ -35,7 +38,9 @@ async function main() {
   }
 
   if (issues.some((issue) => issue.severity === "error")) {
-    throw new Error("Feed has errors; snapshot not updated. The last-known-good snapshot is unchanged.");
+    throw new Error(
+      "Feed has errors; snapshot not updated. The last-known-good snapshot is unchanged.",
+    );
   }
 
   const snapshot: EpisodeSnapshot = episodeSnapshotSchema.parse({
@@ -47,7 +52,9 @@ async function main() {
   await mkdir(path.dirname(SNAPSHOT_PATH), { recursive: true });
   await writeFile(SNAPSHOT_PATH, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
 
-  console.log(`Wrote ${snapshot.episodes.length} episodes to ${path.relative(process.cwd(), SNAPSHOT_PATH)}`);
+  console.log(
+    `Wrote ${snapshot.episodes.length} episodes to ${path.relative(process.cwd(), SNAPSHOT_PATH)}`,
+  );
   console.table(
     snapshot.episodes.map((episode) => ({
       ep: episode.episodeNumber,

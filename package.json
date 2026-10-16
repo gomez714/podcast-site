@@ -8,10 +8,13 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
     "sync:episodes": "tsx scripts/sync-episodes.ts",
-    "fixture:refresh": "tsx scripts/refresh-feed-fixture.ts"
+    "fixture:refresh": "tsx scripts/refresh-feed-fixture.ts",
+    "assets:brand": "tsx scripts/build-brand-assets.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
@@ -33,6 +36,10 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.2",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.10",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "sharp": "^0.35.5",
     "tailwindcss": "^4",
     "tsx": "^4.23.15",
     "typescript": "^5",

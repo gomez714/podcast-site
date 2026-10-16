@@ -1,0 +1,13 @@
+.next/
+out/
+build/
+coverage/
+node_modules/
+package-lock.json
+next-env.d.ts
+
+# Generated or source-of-truth files that must stay byte-for-byte as produced
+src/data/
+tests/fixtures/
+assets/
+docs/
