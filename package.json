@@ -14,7 +14,9 @@
     "test:watch": "vitest",
     "sync:episodes": "tsx scripts/sync-episodes.ts",
     "fixture:refresh": "tsx scripts/refresh-feed-fixture.ts",
-    "assets:brand": "tsx scripts/build-brand-assets.ts"
+    "assets:brand": "tsx scripts/build-brand-assets.ts",
+    "assets:hero": "tsx scripts/build-hero-art.ts",
+    "assets:thumbnails": "tsx scripts/build-episode-thumbnails.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
@@ -34,6 +36,7 @@
     "@types/node": "^24.19.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "ag-psd": "^31.0.3",
     "eslint": "^9",
     "eslint-config-next": "16.4.2",
     "eslint-config-prettier": "^10.1.8",

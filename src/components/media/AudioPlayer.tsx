@@ -1,0 +1,383 @@
+"use client";
+
+import { cn } from "cn";
+import { RefreshCw, Volume2, VolumeX } from "lucide-react";
+import Image from "next/image";
+import {
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useReducer,
+  useRef,
+  useSyncExternalStore,
+  type CSSProperties,
+  type Ref,
+} from "react";
+
+import {
+  initialPlayerState,
+  playerReducer,
+  type PlaybackSnapshot,
+  type PlayerErrorKind,
+  type PlayerEvent,
+} from "@/lib/media/player-state";
+import { bufferedEnd, clampSeek, effectiveDuration, seekableEnd } from "@/lib/media/seek";
+
+import coverArt from "../../../public/images/brand/cover-art.jpg";
+import { AudioTimeline } from "./AudioTimeline";
+import { PlaybackControls, SKIP_BACK_SECONDS, SKIP_FORWARD_SECONDS } from "./PlaybackControls";
+import { PlaybackSpeed } from "./PlaybackSpeed";
+
+export type AudioPlayerHandle = {
+  pause: () => void;
+  /** Seeks and starts playback; only call from a user action so browsers allow it. */
+  playFrom: (seconds: number) => void;
+  /** Play/pause, as the main button does; for controls outside the player (the mini-player). */
+  toggle: () => void;
+};
+
+type AudioPlayerProps = {
+  src: string;
+  title: string;
+  guestName?: string;
+  /** RSS duration, shown until the audio reports its own. */
+  durationHint?: number;
+  tone?: "dark" | "light";
+  /** Hide the cover art and title when the page already shows them next to the player. */
+  showHeader?: boolean;
+  className?: string;
+  /** Mirrors playback state outward, e.g. to the docked mini-player. */
+  onStateChange?: (snapshot: PlaybackSnapshot) => void;
+  ref?: Ref<AudioPlayerHandle>;
+};
+
+const ERROR_MESSAGES: Record<PlayerErrorKind, string> = {
+  network: "The audio stopped loading. Check your connection, then try again.",
+  unavailable: "This episode's audio couldn't be loaded right now.",
+  blocked: "Your browser didn't let playback start. Press play to try again.",
+};
+
+const subscribeNoop = () => () => {};
+
+/**
+ * Branded player on a native `<audio>` element (spec §7). Until hydration, and if JavaScript never
+ * runs, the browser's own controls are shown instead, so listening never depends on this UI.
+ * Remount with a `key` per episode so a new source always starts from a clean state.
+ */
+export function AudioPlayer({
+  src,
+  title,
+  guestName,
+  durationHint,
+  tone = "dark",
+  showHeader = true,
+  className,
+  onStateChange,
+  ref,
+}: AudioPlayerProps) {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [state, dispatch] = useReducer(playerReducer, initialPlayerState);
+  const enhanced = useSyncExternalStore(
+    subscribeNoop,
+    () => true,
+    () => false,
+  );
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const time = () =>
+      dispatch({
+        type: "time",
+        currentTime: audio.currentTime,
+        bufferedEnd: bufferedEnd(audio.buffered, audio.currentTime),
+      });
+    const handlers: Record<string, () => void> = {
+      loadedmetadata: () => dispatch({ type: "duration", duration: audio.duration }),
+      durationchange: () => dispatch({ type: "duration", duration: audio.duration }),
+      timeupdate: time,
+      progress: time,
+      playing: () => dispatch({ type: "playing" }),
+      pause: () => dispatch({ type: "pause" }),
+      ended: () => dispatch({ type: "ended" }),
+      waiting: () => dispatch({ type: "waiting" }),
+      stalled: () => dispatch({ type: "waiting" }),
+      canplay: () => dispatch({ type: "canplay" }),
+      seeking: () => dispatch({ type: "seeking", currentTime: audio.currentTime }),
+      seeked: () => dispatch({ type: "seeked", currentTime: audio.currentTime }),
+      ratechange: () => dispatch({ type: "rate", rate: audio.playbackRate }),
+      volumechange: () => dispatch({ type: "volume", volume: audio.volume, muted: audio.muted }),
+      error: () => dispatch({ type: "mediaError", code: audio.error?.code ?? 4 }),
+    };
+    for (const [name, handler] of Object.entries(handlers)) audio.addEventListener(name, handler);
+
+    // The native controls may have been used before hydration; pick up where they are.
+    const sync: PlayerEvent[] = [
+      { type: "duration", duration: audio.duration },
+      { type: "seeked", currentTime: audio.currentTime },
+      { type: "volume", volume: audio.volume, muted: audio.muted },
+    ];
+    sync.forEach(dispatch);
+    if (!audio.paused) dispatch({ type: "playing" });
+    if (audio.error) dispatch({ type: "mediaError", code: audio.error.code });
+
+    return () => {
+      for (const [name, handler] of Object.entries(handlers)) {
+        audio.removeEventListener(name, handler);
+      }
+      audio.pause();
+    };
+  }, [src]);
+
+  const play = useCallback(async () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (audio.ended) audio.currentTime = 0;
+    dispatch({ type: "requestPlay" });
+    try {
+      await audio.play();
+    } catch (error) {
+      const name = error instanceof DOMException ? error.name : "";
+      if (name === "AbortError") return;
+      dispatch({ type: "playRejected", blocked: name === "NotAllowedError" });
+    }
+  }, []);
+
+  const toggle = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (state.status === "playing" || state.status === "loading") audio.pause();
+    else void play();
+  }, [play, state.status]);
+
+  const seekTo = useCallback(
+    (target: number) => {
+      const audio = audioRef.current;
+      if (!audio) return;
+      const duration = effectiveDuration(audio.duration, durationHint);
+      const limit = seekableEnd(audio.seekable) ?? duration;
+      audio.currentTime = clampSeek(target, limit);
+    },
+    [durationHint],
+  );
+
+  const skip = useCallback(
+    (seconds: number) => seekTo((audioRef.current?.currentTime ?? 0) + seconds),
+    [seekTo],
+  );
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      pause: () => audioRef.current?.pause(),
+      playFrom: (seconds) => {
+        const audio = audioRef.current;
+        if (!audio) return;
+        if (audio.readyState >= HTMLMediaElement.HAVE_METADATA) seekTo(seconds);
+        else audio.addEventListener("loadedmetadata", () => seekTo(seconds), { once: true });
+        void play();
+      },
+      toggle,
+    }),
+    [play, seekTo, toggle],
+  );
+
+  /** One manual retry per press; never retries on its own (spec §7.4). */
+  const retry = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (state.error === "blocked") {
+      void play();
+      return;
+    }
+    const resumeAt = state.currentTime;
+    dispatch({ type: "retry" });
+    audio.addEventListener(
+      "loadedmetadata",
+      () => {
+        if (resumeAt > 0) audio.currentTime = resumeAt;
+      },
+      { once: true },
+    );
+    audio.load();
+    void play();
+  };
+
+  useEffect(() => {
+    if (!enhanced || !("mediaSession" in navigator)) return;
+    const session = navigator.mediaSession;
+    session.metadata = new MediaMetadata({
+      title,
+      artist: guestName ?? "The Bottom Left Pane",
+      album: "The Bottom Left Pane",
+      artwork: [
+        { src: coverArt.src, sizes: `${coverArt.width}x${coverArt.height}`, type: "image/jpeg" },
+      ],
+    });
+    const actions: [MediaSessionAction, MediaSessionActionHandler][] = [
+      ["play", () => void play()],
+      ["pause", () => audioRef.current?.pause()],
+      ["seekbackward", () => skip(-SKIP_BACK_SECONDS)],
+      ["seekforward", () => skip(SKIP_FORWARD_SECONDS)],
+      ["seekto", (details) => details.seekTime !== undefined && seekTo(details.seekTime)],
+    ];
+    for (const [action, handler] of actions) {
+      try {
+        session.setActionHandler(action, handler);
+      } catch {
+        // Not every browser supports every action.
+      }
+    }
+    return () => {
+      for (const [action] of actions) {
+        try {
+          session.setActionHandler(action, null);
+        } catch {
+          // Ignore unsupported actions.
+        }
+      }
+    };
+  }, [enhanced, guestName, play, seekTo, skip, title]);
+
+  const withAudio = (apply: (audio: HTMLAudioElement) => void) => {
+    if (audioRef.current) apply(audioRef.current);
+  };
+
+  const duration = effectiveDuration(state.duration, durationHint);
+
+  useEffect(() => {
+    onStateChange?.({
+      status: state.status,
+      buffering: state.buffering,
+      currentTime: state.currentTime,
+      duration,
+    });
+  }, [onStateChange, state.status, state.buffering, state.currentTime, duration]);
+
+  const errorMessage = state.error ? ERROR_MESSAGES[state.error] : undefined;
+  const status = errorMessage ?? (state.buffering ? "Loading audio…" : "");
+
+  return (
+    <section
+      aria-label={`Audio player: ${title}`}
+      className={cn(
+        "audio-player rounded-xl border p-4 sm:p-6",
+        tone === "dark" ? "audio-player-dark" : "audio-player-light",
+        className,
+      )}
+    >
+      {showHeader && (
+        <div className="mb-5 flex items-center gap-4">
+          <Image
+            src={coverArt}
+            alt=""
+            sizes="96px"
+            className="size-16 shrink-0 rounded-md sm:size-24"
+          />
+          <div className="min-w-0">
+            <p className="eyebrow text-(--player-muted)">Audio</p>
+            <p className="mt-1.5 line-clamp-2 leading-snug font-bold">{title}</p>
+            {guestName && <p className="mt-0.5 text-sm text-(--player-muted)">with {guestName}</p>}
+          </div>
+        </div>
+      )}
+
+      <audio ref={audioRef} src={src} preload="metadata" className="hidden" />
+      {/*
+        Without JavaScript the browser's own player is shown instead. The custom controls are
+        server-rendered too (and hidden when scripting is off), so the page doesn't jump when
+        React takes over, as it did when native controls were swapped for these.
+      */}
+      <noscript>
+        <audio src={src} controls preload="none" className="w-full" />
+      </noscript>
+
+      <div className="grid gap-4 noscript:hidden">
+        <div className="flex justify-center">
+          <PlaybackControls
+            status={state.status}
+            buffering={state.buffering}
+            onToggle={toggle}
+            onSkip={skip}
+          />
+        </div>
+
+        <AudioTimeline
+          currentTime={state.currentTime}
+          duration={duration}
+          bufferedEnd={state.bufferedEnd}
+          onSeek={seekTo}
+        />
+
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <PlaybackSpeed
+            rate={state.rate}
+            onChange={(rate) =>
+              withAudio((audio) => {
+                audio.playbackRate = rate;
+              })
+            }
+          />
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              aria-label={state.muted ? "Unmute" : "Mute"}
+              onClick={() =>
+                withAudio((audio) => {
+                  audio.muted = !audio.muted;
+                })
+              }
+              className="grid size-11 place-items-center rounded-full hover:bg-(--control-hover)"
+            >
+              {state.muted || state.volume === 0 ? (
+                <VolumeX aria-hidden="true" className="size-5" />
+              ) : (
+                <Volume2 aria-hidden="true" className="size-5" />
+              )}
+            </button>
+            {/* Phones control volume with hardware buttons, and iOS ignores `volume`. */}
+            <input
+              type="range"
+              aria-label="Volume"
+              className="audio-range audio-range-volume w-24 pointer-coarse:hidden"
+              style={{ "--played": `${(state.muted ? 0 : state.volume) * 100}%` } as CSSProperties}
+              min={0}
+              max={1}
+              step={0.05}
+              value={state.muted ? 0 : state.volume}
+              onChange={(event) => {
+                const volume = Number(event.target.value);
+                withAudio((audio) => {
+                  audio.volume = volume;
+                  audio.muted = volume === 0;
+                });
+              }}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div role="status" aria-live="polite" className={cn(status && "mt-4")}>
+        {status && <p className="text-sm text-(--player-muted)">{status}</p>}
+      </div>
+      {state.error && (
+        <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-bold">
+          <button
+            type="button"
+            onClick={retry}
+            className="audio-chip inline-flex items-center gap-2"
+          >
+            <RefreshCw aria-hidden="true" className="size-4" />
+            Try again
+          </button>
+          {state.error !== "blocked" && (
+            <a href={src} className="underline underline-offset-4">
+              Open the audio file
+            </a>
+          )}
+        </div>
+      )}
+    </section>
+  );
+}

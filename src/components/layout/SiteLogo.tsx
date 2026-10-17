@@ -19,7 +19,7 @@ export function SiteLogo() {
         <span className="font-display text-[15px] font-extrabold tracking-[0.075em] uppercase min-[391px]:text-lg md:text-[22px]">
           {siteConfig.name}
         </span>
-        <span className="mt-1 hidden text-[9px] font-semibold tracking-[0.16em] whitespace-nowrap text-ice uppercase min-[360px]:block md:text-[11px] md:tracking-[0.23em]">
+        <span className="mt-1 hidden text-[9px] font-semibold tracking-[0.16em] whitespace-nowrap text-ice uppercase sm:block md:text-[11px] md:tracking-[0.23em]">
           {siteConfig.tagline}
         </span>
       </span>

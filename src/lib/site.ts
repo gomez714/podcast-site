@@ -8,7 +8,14 @@ export const siteConfig = {
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://bottomleftpane.com",
   rssUrl: process.env.PODCAST_RSS_URL ?? DEFAULT_PODCAST_RSS_URL,
   locale: "en_US",
+  host: "Luis Gomez",
 } as const;
+
+/**
+ * The public contact address (spec §5.5). PLACEHOLDER: the host hasn't chosen one yet, so the
+ * contact page shows a marked placeholder. Never fall back to the RSS `<itunes:owner>` address.
+ */
+export const contactEmail: string | undefined = undefined;
 
 export type NavItem = { label: string; href: string };
 
@@ -19,4 +26,22 @@ export const mainNav: NavItem[] = [
   { label: "The Return", href: "/#revival" },
 ];
 
-export const followNavItem: NavItem = { label: "Find the show", href: "/#listen" };
+/** Footer-only pages, listed after the main navigation in the footer's bottom bar. */
+export const secondaryNav: NavItem[] = [
+  { label: "Contact", href: "/contact" },
+  { label: "Privacy", href: "/privacy" },
+];
+
+/** The footer is on every page, so this jumps within the current page rather than to the homepage. */
+export const followNavItem: NavItem = { label: "Find the show", href: "#listen" };
+
+/** Owned listening and social accounts, confirmed by the host on Oct 16, 2026. */
+export const platformLinks: NavItem[] = [
+  {
+    label: "Apple Podcasts",
+    href: "https://podcasts.apple.com/us/podcast/the-bottom-left-pane/id1723244219",
+  },
+  { label: "Spotify", href: "https://open.spotify.com/show/3huZ7oCzVXxXMpkbUtxR1d" },
+  { label: "YouTube", href: "https://www.youtube.com/@BottomLeftPane" },
+  { label: "Instagram", href: "https://www.instagram.com/bottomleftpane" },
+];

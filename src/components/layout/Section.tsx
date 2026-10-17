@@ -18,7 +18,7 @@ type SectionProps = Omit<ComponentProps<"section">, "children"> & {
 
 export function Section({ tone, className, containerClassName, children, ...props }: SectionProps) {
   return (
-    <section className={cn(toneClass[tone], "py-[clamp(4rem,8vw,6.5rem)]", className)} {...props}>
+    <section className={cn(toneClass[tone], "py-[clamp(3rem,8vw,6.5rem)]", className)} {...props}>
       <Container className={containerClassName}>{children}</Container>
     </section>
   );

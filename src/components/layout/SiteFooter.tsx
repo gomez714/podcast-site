@@ -1,6 +1,7 @@
 import Link from "next/link";
 
-import { mainNav, siteConfig } from "@/lib/site";
+import { ExternalLink } from "@/components/ui/external-link";
+import { mainNav, platformLinks, secondaryNav, siteConfig } from "@/lib/site";
 
 import { Container } from "./Container";
 import { SiteLogo } from "./SiteLogo";
@@ -10,40 +11,44 @@ async function CopyrightYear() {
   return new Date().getFullYear();
 }
 
+/** Outlined pill matching the header's "Find the show" call to action. */
+const platformLinkClass =
+  "inline-flex min-h-11 items-center gap-2 rounded-md border border-ice px-3.5 text-xs font-bold whitespace-nowrap text-ice hover:bg-white/8";
+
 const footerLinkClass =
-  "inline-flex min-h-11 items-center underline-offset-4 hover:text-white hover:underline";
+  "inline-flex min-h-11 items-center gap-1.5 underline-offset-4 hover:text-white hover:underline";
 
 export function SiteFooter() {
   return (
     <footer id="listen" className="border-t border-line-dark surface-dark">
-      <Container className="grid gap-12 py-14 md:grid-cols-[1.4fr_1fr_1fr] md:gap-10">
-        <div className="flex flex-col gap-5">
-          <SiteLogo />
-          <p className="max-w-sm text-sm leading-relaxed text-pale">{siteConfig.description}</p>
-        </div>
+      <Container className="flex flex-col gap-6 py-10 md:py-12 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
+        <SiteLogo />
 
-        <section aria-labelledby="footer-listen">
+        <section aria-labelledby="footer-listen" className="lg:max-w-152">
           <h2 id="footer-listen" className="eyebrow text-ice">
             Find the show
           </h2>
-          <p className="mt-4 text-sm leading-relaxed text-pale">
-            Follow in any podcast app using the show&apos;s RSS feed.
-          </p>
-          <ul className="mt-2 text-sm text-ice">
+          <ul className="mt-4 flex flex-wrap gap-2.5">
+            {platformLinks.map((platform) => (
+              <li key={platform.href}>
+                <ExternalLink href={platform.href} className={platformLinkClass}>
+                  {platform.label}
+                </ExternalLink>
+              </li>
+            ))}
             <li>
-              <a href={siteConfig.rssUrl} className={footerLinkClass}>
-                Podcast RSS feed
-              </a>
+              <ExternalLink href={siteConfig.rssUrl} className={platformLinkClass}>
+                RSS feed
+              </ExternalLink>
             </li>
           </ul>
         </section>
+      </Container>
 
-        <nav aria-labelledby="footer-explore">
-          <h2 id="footer-explore" className="eyebrow text-ice">
-            Explore
-          </h2>
-          <ul className="mt-2 text-sm text-ice">
-            {mainNav.map((item) => (
+      <Container className="flex flex-col gap-1 border-t border-line-dark py-4 text-xs text-ice md:flex-row md:items-center md:justify-between md:gap-6">
+        <nav aria-label="Footer">
+          <ul className="flex flex-wrap gap-x-6 font-semibold">
+            {[...mainNav, ...secondaryNav].map((item) => (
               <li key={item.href}>
                 <Link href={item.href} className={footerLinkClass}>
                   {item.label}
@@ -52,15 +57,14 @@ export function SiteFooter() {
             ))}
           </ul>
         </nav>
-      </Container>
-
-      <Container className="flex flex-wrap items-center justify-between gap-4 border-t border-line-dark py-6 text-xs text-ice">
-        <p>
-          © <CopyrightYear /> {siteConfig.name}
-        </p>
-        <a href="#top" className={footerLinkClass}>
-          Back to top <span aria-hidden="true">↑</span>
-        </a>
+        <div className="flex items-center justify-between gap-6">
+          <p>
+            © <CopyrightYear /> {siteConfig.name}
+          </p>
+          <a href="#top" className={footerLinkClass}>
+            Back to top <span aria-hidden="true">↑</span>
+          </a>
+        </div>
       </Container>
     </footer>
   );

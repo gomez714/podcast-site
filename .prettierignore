@@ -11,3 +11,4 @@ src/data/
 tests/fixtures/
 assets/
 docs/
+src/components/home/hero-geometry.json

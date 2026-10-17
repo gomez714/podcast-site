@@ -1,43 +1,32 @@
+import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 
+import { FeaturedEpisodes } from "@/components/home/FeaturedEpisodes";
+import { HomeHero } from "@/components/home/HomeHero";
+import { HostTeaser } from "@/components/home/HostTeaser";
 import { Section, SectionHeading } from "@/components/layout/Section";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { ButtonLink } from "@/components/ui/button-link";
+import { showPremise } from "@/content/show";
+import { pageMetadata } from "@/lib/metadata";
+import { siteConfig } from "@/lib/site";
+import { podcastSeriesJsonLd } from "@/lib/structured-data";
 
 import coverArt from "../../public/images/brand/cover-art.jpg";
+
+export const metadata: Metadata = pageMetadata({
+  title: `${siteConfig.name} — ${siteConfig.tagline}`,
+  absoluteTitle: true,
+  description: siteConfig.description,
+  path: "/",
+});
 
 export default function HomePage() {
   return (
     <>
-      <Section tone="dark" aria-labelledby="home-headline" className="pt-[clamp(3rem,6vw,4.5rem)]">
-        <div className="max-w-[590px]">
-          <p className="flex items-center gap-3.5 eyebrow text-ice">
-            <span aria-hidden="true" className="h-0.5 w-7 bg-sky" />
-            Beyond what you see
-          </p>
-          <h1 id="home-headline" className="my-7 display-xl">
-            There&apos;s more <span className="block text-ice">to every story.</span>
-          </h1>
-          <p className="mb-8 max-w-[490px] text-[clamp(0.875rem,1.15vw,1.0625rem)] leading-[1.9] text-[#d9f5ff]">
-            Everyone has experiences, perspectives, and parts of themselves that don&apos;t always
-            make it into everyday conversation. Here, we make room for them.
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <ButtonLink href="/#about">
-              Discover the podcast <span aria-hidden="true">↗</span>
-            </ButtonLink>
-            <ButtonLink href="/episodes" variant="outline-on-dark">
-              Explore episodes <span aria-hidden="true">→</span>
-            </ButtonLink>
-          </div>
-          <p className="mt-10 flex items-center gap-2.5 text-[11px] tracking-[0.04em] text-ice uppercase">
-            <span
-              aria-hidden="true"
-              className="size-[7px] rounded-full bg-bright shadow-[0_0_0_4px_rgb(93_198_255/0.1)]"
-            />
-            A new chapter is coming
-          </p>
-        </div>
-      </Section>
+      <JsonLd data={podcastSeriesJsonLd()} />
+      <HomeHero />
 
       <Section
         tone="light"
@@ -50,24 +39,25 @@ export default function HomePage() {
             What&apos;s behind <br />
             the pane?
           </SectionHeading>
-          <div className="max-w-[65ch] space-y-4 text-[15px] leading-[2] text-[#334d77]">
-            <p>
-              The Bottom Left Pane is built around the stories, perspectives, and experiences we
-              keep to ourselves. Every conversation is a chance to listen a little closer, get
-              curious, and discover something we might otherwise never see.
-            </p>
-            <p>
-              Not every story needs a dramatic reveal. Sometimes, the most interesting thing is
-              simply making room for a real conversation.
-            </p>
+          <div className="max-w-[65ch] space-y-4 text-base leading-[1.8] text-[#334d77] md:text-[15px] md:leading-[2]">
+            <p>{showPremise.intro}</p>
+            <p>{showPremise.name}</p>
+            <p>{showPremise.closing}</p>
           </div>
+          <Link
+            href="/about"
+            className="mt-7 inline-flex min-h-11 items-center gap-2 text-sm font-extrabold text-navy underline decoration-slate decoration-2 underline-offset-[6px] hover:decoration-navy"
+          >
+            More about the show <span aria-hidden="true">→</span>
+          </Link>
         </div>
         <Image
           src={coverArt}
           alt="The Bottom Left Pane cover art: a figure at an open, glowing door inside a four-pane window onto blue mountains."
           sizes="(min-width: 1024px) 350px, (min-width: 768px) 270px, 290px"
           placeholder="blur"
-          className="aspect-square w-full max-w-[290px] rounded-lg shadow-[18px_18px_0_var(--brand-ice)] md:max-w-none"
+          // Phones saw this same art in the hero a screen earlier.
+          className="hidden aspect-square w-full rounded-lg shadow-[18px_18px_0_var(--brand-ice)] md:block"
         />
       </Section>
 
@@ -88,9 +78,13 @@ export default function HomePage() {
           </p>
         </div>
         <ButtonLink href="/episodes" className="justify-self-start">
-          Visit the archive <span aria-hidden="true">↗</span>
+          Visit the archive <span aria-hidden="true">→</span>
         </ButtonLink>
       </Section>
+
+      <FeaturedEpisodes />
+
+      <HostTeaser />
     </>
   );
 }

@@ -139,6 +139,207 @@
   --focus: var(--brand-navy);
 }
 
+/*
+ * Hero door light (spec §4.2), used by HeroArtwork. The door's own motion is in the SVG <animate>
+ * elements there; keep these delays in step with them.
+ */
+@layer components {
+  .hero-light {
+    opacity: 0;
+    animation:
+      hero-light-in 930ms ease 550ms both,
+      hero-light-ambient 9s ease-in-out 2.6s infinite alternate;
+  }
+
+  .hero-still {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-light {
+      opacity: 1;
+      animation: none;
+    }
+
+    .hero-animated {
+      display: none;
+    }
+
+    .hero-still {
+      display: inline;
+    }
+  }
+}
+
+/*
+ * Audio player (spec §7.3). Played track is bright on navy and mid-blue on light (both >= 3:1
+ * against their surface, WCAG 1.4.11); the unplayed base is a quieter tint of the same family.
+ */
+@layer components {
+  .audio-player-dark {
+    --player-muted: var(--brand-ice);
+    --track-base: rgb(200 247 255 / 0.2);
+    --track-buffered: rgb(200 247 255 / 0.38);
+    --track-played: var(--brand-bright);
+    --thumb: var(--brand-white);
+    --control-hover: rgb(200 247 255 / 0.12);
+    --play-bg: var(--brand-pale);
+    --play-fg: var(--brand-navy);
+    background-color: rgb(255 255 255 / 0.04);
+    border-color: var(--line-on-dark);
+    color: var(--brand-white);
+  }
+
+  .audio-player-light {
+    --player-muted: var(--brand-slate);
+    --track-base: var(--line-on-light);
+    --track-buffered: #a9d6ef;
+    --track-played: var(--brand-mid);
+    --thumb: var(--brand-navy);
+    --control-hover: var(--brand-pale);
+    --play-bg: var(--brand-navy);
+    --play-fg: var(--brand-white);
+    background-color: var(--brand-white);
+    border-color: var(--line-on-light);
+    color: var(--brand-navy);
+  }
+
+  .audio-play {
+    background-color: var(--play-bg);
+    color: var(--play-fg);
+  }
+
+  .media-tab {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    padding-inline: 1.15rem;
+    font-size: 0.875rem;
+    font-weight: 800;
+    color: var(--brand-ice);
+  }
+
+  .media-tab:hover {
+    background-color: rgb(200 247 255 / 0.12);
+  }
+
+  .media-tab[data-active] {
+    background-color: var(--brand-pale);
+    color: var(--brand-navy);
+  }
+
+  .section-tab {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: 0.35rem;
+    border-radius: 999px;
+    padding-inline: 1.15rem;
+    font-size: 0.875rem;
+    font-weight: 800;
+    color: var(--brand-slate);
+  }
+
+  .section-tab:hover {
+    background-color: var(--brand-pale);
+    color: var(--brand-navy);
+  }
+
+  .section-tab[data-active] {
+    background-color: var(--brand-navy);
+    color: var(--brand-white);
+  }
+
+  .audio-chip {
+    min-height: 2.75rem;
+    border: 1px solid currentColor;
+    border-color: color-mix(in srgb, currentColor 35%, transparent);
+    border-radius: 999px;
+    padding-inline: 0.9rem;
+    font-size: 0.875rem;
+    font-weight: 800;
+  }
+
+  .audio-chip:hover {
+    background-color: var(--control-hover);
+  }
+
+  .audio-range {
+    --played: 0%;
+    --buffered: 0%;
+    --track: linear-gradient(
+      to right,
+      var(--track-played) var(--played),
+      var(--track-buffered) var(--played) var(--buffered),
+      var(--track-base) var(--buffered)
+    );
+    appearance: none;
+    width: 100%;
+    height: 2.75rem;
+    background: transparent;
+    cursor: pointer;
+    touch-action: pan-y;
+  }
+
+  .audio-range:disabled {
+    cursor: default;
+    opacity: 0.5;
+  }
+
+  .audio-range::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--track);
+  }
+
+  .audio-range::-moz-range-track {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--track);
+  }
+
+  .audio-range::-webkit-slider-thumb {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    margin-top: -6px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--thumb);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--track-played) 35%, transparent);
+  }
+
+  .audio-range::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--thumb);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--track-played) 35%, transparent);
+  }
+}
+
+@keyframes hero-light-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Barely-there breathing of the doorway light; opacity only. */
+@keyframes hero-light-ambient {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.86;
+  }
+}
+
 @layer base {
   * {
     @apply border-border;

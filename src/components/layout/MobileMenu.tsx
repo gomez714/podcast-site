@@ -71,14 +71,15 @@ export function MobileMenu() {
               </li>
             ))}
           </ul>
-          <NavLink
+          {/* A same-page jump to the footer, so it never leaves the page (or stops its audio). */}
+          <a
             href={followNavItem.href}
             onClick={close}
             className="mt-8 inline-flex min-h-12 items-center gap-3 rounded-md border border-ice px-5 text-sm font-bold text-ice hover:bg-white/8"
           >
             {followNavItem.label}
-            <span aria-hidden="true">↗</span>
-          </NavLink>
+            <span aria-hidden="true">↓</span>
+          </a>
         </nav>
       </SheetContent>
     </Sheet>
