@@ -15,8 +15,8 @@ const platformLinkClass =
   "inline-flex min-h-11 items-center gap-2 rounded-md border border-navy px-3.5 text-xs font-bold whitespace-nowrap text-navy hover:bg-pale";
 
 /**
- * Contact page (spec §5.5): one monitored, public contact method. PLACEHOLDER until the host
- * chooses an address (`contactEmail` in `src/lib/site.ts`); no form, so no personal data collected.
+ * Contact page (spec §5.5): one monitored, public contact method (`contactEmail` in
+ * `src/lib/site.ts`); no form, so no personal data collected.
  */
 export default function ContactPage() {
   return (

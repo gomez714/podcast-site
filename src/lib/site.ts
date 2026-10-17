@@ -12,10 +12,10 @@ export const siteConfig = {
 } as const;
 
 /**
- * The public contact address (spec §5.5). PLACEHOLDER: the host hasn't chosen one yet, so the
- * contact page shows a marked placeholder. Never fall back to the RSS `<itunes:owner>` address.
+ * The public contact address (spec §5.5), chosen by the host on Oct 17, 2026. Never fall back to
+ * the RSS `<itunes:owner>` address.
  */
-export const contactEmail: string | undefined = undefined;
+export const contactEmail: string | undefined = "bottomleftpane@gmail.com";
 
 export type NavItem = { label: string; href: string };
 
