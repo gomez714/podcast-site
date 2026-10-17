@@ -16,6 +16,7 @@
     "fixture:refresh": "tsx scripts/refresh-feed-fixture.ts",
     "assets:brand": "tsx scripts/build-brand-assets.ts",
     "assets:hero": "tsx scripts/build-hero-art.ts",
+    "assets:host": "tsx scripts/build-host-photos.ts",
     "assets:thumbnails": "tsx scripts/build-episode-thumbnails.ts"
   },
   "dependencies": {
