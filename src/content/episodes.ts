@@ -90,6 +90,11 @@ export const episodeEditorial: EpisodeEditorial[] = [
       "Alekson on leaving Brazil for a tech career in Canada: learning French in Quebec, cultural differences, setbacks, and his mission to help other Brazilians build careers abroad.",
     topics: ["Technology careers", "Moving countries", "Self-development"],
     youtubeId: "C8f4mPhpIb8",
+    // Current links from the host (Oct 29, 2026); the show notes' LinkedIn URL no longer works.
+    guestLinks: [
+      { label: "Instagram", href: "https://www.instagram.com/helloalekson/" },
+      { label: "LinkedIn", href: "https://www.linkedin.com/in/alekson/" },
+    ],
     reviewStatus: "reviewed",
   },
   {

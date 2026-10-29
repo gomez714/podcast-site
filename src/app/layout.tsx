@@ -13,10 +13,12 @@ const manrope = Manrope({
   display: "swap",
 });
 
+// Only the weights in use: 800 for headlines, 700 for the mobile menu links. Every weight listed is
+// preloaded before first paint, so unused ones slow phones down (pre-launch Lighthouse, Oct 29, 2026).
 const barlowCondensed = Barlow_Condensed({
   variable: "--font-barlow-condensed",
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
+  weight: ["700", "800"],
   display: "swap",
 });
 

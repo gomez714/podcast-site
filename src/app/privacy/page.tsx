@@ -86,8 +86,8 @@ export default function PrivacyPage() {
             </p>
             <p>
               See the{" "}
-              <ExternalLink href="https://vercel.com/legal/privacy-policy" className={linkClass}>
-                Vercel privacy policy
+              <ExternalLink href="https://vercel.com/legal/privacy-notice" className={linkClass}>
+                Vercel privacy notice
               </ExternalLink>
               .
             </p>
