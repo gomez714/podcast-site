@@ -11,15 +11,15 @@ export const SKIP_FORWARD_SECONDS = 30;
 
 type PlaybackControlsProps = {
   status: PlayerStatus;
-  buffering: boolean;
+  /** Show the loading ring. Pass a delayed value so quick seeks don't flash it. */
+  busy: boolean;
   onToggle: () => void;
   onSkip: (seconds: number) => void;
 };
 
 /** Skip back 15 s, play/pause, skip forward 30 s (spec §7.2). */
-export function PlaybackControls({ status, buffering, onToggle, onSkip }: PlaybackControlsProps) {
+export function PlaybackControls({ status, busy, onToggle, onSkip }: PlaybackControlsProps) {
   const active = status === "playing" || status === "loading";
-  const busy = status === "loading" || buffering;
   const label = active ? "Pause" : status === "ended" ? "Play again" : "Play";
 
   return (

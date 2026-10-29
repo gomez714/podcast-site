@@ -10,6 +10,7 @@ import {
   useImperativeHandle,
   useReducer,
   useRef,
+  useState,
   useSyncExternalStore,
   type CSSProperties,
   type Ref,
@@ -60,6 +61,32 @@ const ERROR_MESSAGES: Record<PlayerErrorKind, string> = {
 };
 
 const subscribeNoop = () => () => {};
+
+/**
+ * The loading ring waits this long before appearing, and then stays at least `BUSY_MIN_VISIBLE_MS`.
+ * Seeks and skips often load in a few milliseconds; showing a spinner (and a "Loading audio…" line)
+ * for those, or one that blinked on and off, made the player flicker (Oct 29, 2026).
+ */
+const BUSY_DELAY_MS = 350;
+const BUSY_MIN_VISIBLE_MS = 500;
+
+/** A loading indicator that ignores brief waits and never blinks: delayed on, held for a minimum. */
+function useBusyIndicator(active: boolean): boolean {
+  const [visible, setVisible] = useState(false);
+  const shownAt = useRef(0);
+  useEffect(() => {
+    if (active === visible) return;
+    const wait = active
+      ? BUSY_DELAY_MS
+      : Math.max(0, BUSY_MIN_VISIBLE_MS - (performance.now() - shownAt.current));
+    const timer = window.setTimeout(() => {
+      if (active) shownAt.current = performance.now();
+      setVisible(active);
+    }, wait);
+    return () => window.clearTimeout(timer);
+  }, [active, visible]);
+  return visible;
+}
 
 /**
  * Branded player on a native `<audio>` element (spec §7). Until hydration, and if JavaScript never
@@ -275,18 +302,20 @@ export function AudioPlayer({
   };
 
   const duration = effectiveDuration(state.duration, durationHint);
+  const busy = useBusyIndicator(state.status === "loading" || state.buffering);
+  // Announced and mirrored to the mini-player only while it's genuinely still loading.
+  const buffering = state.buffering && busy;
 
   useEffect(() => {
     onStateChange?.({
       status: state.status,
-      buffering: state.buffering,
+      buffering,
       currentTime: state.currentTime,
       duration,
     });
-  }, [onStateChange, state.status, state.buffering, state.currentTime, duration]);
+  }, [onStateChange, state.status, buffering, state.currentTime, duration]);
 
   const errorMessage = state.error ? ERROR_MESSAGES[state.error] : undefined;
-  const status = errorMessage ?? (state.buffering ? "Loading audio…" : "");
 
   return (
     <section
@@ -331,12 +360,7 @@ export function AudioPlayer({
 
       <div className="grid gap-4 noscript:hidden">
         <div className="flex justify-center">
-          <PlaybackControls
-            status={state.status}
-            buffering={state.buffering}
-            onToggle={toggle}
-            onSkip={skip}
-          />
+          <PlaybackControls status={state.status} busy={busy} onToggle={toggle} onSkip={skip} />
         </div>
 
         <AudioTimeline
@@ -394,8 +418,18 @@ export function AudioPlayer({
         </div>
       </div>
 
-      <div role="status" aria-live="polite" className={cn(status && "mt-4")}>
-        {status && <p className="text-sm text-(--player-muted)">{status}</p>}
+      {/*
+        Loading is shown by the ring around the play button and announced to screen readers only:
+        a visible "Loading audio…" line here changed the player's height on every seek, so the
+        page below jumped (the "flicker", Oct 29, 2026). Errors stay visible; they're rare and
+        come with a Try again button.
+      */}
+      <div role="status" aria-live="polite" className={cn(errorMessage && "mt-4")}>
+        {errorMessage ? (
+          <p className="text-sm text-(--player-muted)">{errorMessage}</p>
+        ) : (
+          buffering && <p className="sr-only">Loading audio…</p>
+        )}
       </div>
       {state.error && (
         <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-bold">
