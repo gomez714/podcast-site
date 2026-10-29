@@ -196,6 +196,10 @@ export function AudioPlayer({
       const duration = effectiveDuration(audio.duration, durationHint);
       const limit = seekableEnd(audio.seekable) ?? duration;
       audio.currentTime = clampSeek(target, limit);
+      // Show the element's new position now rather than at its async `seeking` event. Otherwise the
+      // seek bar's drag preview is cleared first and the marker snaps back to the old time for a
+      // frame (new -> old -> new). The value is read back from the element, not assumed.
+      dispatch({ type: "seeking", currentTime: audio.currentTime });
     },
     [durationHint],
   );
@@ -206,11 +210,17 @@ export function AudioPlayer({
       const audio = audioRef.current;
       if (!audio) return;
       if (audio.readyState >= HTMLMediaElement.HAVE_METADATA) applySeek(seconds);
-      else audio.addEventListener("loadedmetadata", () => applySeek(seconds), { once: true });
+      else {
+        audio.addEventListener("loadedmetadata", () => applySeek(seconds), { once: true });
+        // Nothing is loaded yet (preload="none"), so hold the marker at the requested spot until
+        // the audio can seek there; without this it sat at 0:00 for a second or more.
+        const target = clampSeek(seconds, effectiveDuration(audio.duration, durationHint));
+        dispatch({ type: "seeking", currentTime: target });
+      }
       if (audio.paused) trackPlay();
       void play();
     },
-    [applySeek, play, trackPlay],
+    [applySeek, durationHint, play, trackPlay],
   );
 
   // With preload="none" nothing is loaded before the first play, so a seek then would be lost.
