@@ -46,7 +46,7 @@ describe("structured data", () => {
 });
 
 describe("sitemap and robots", () => {
-  it("lists every page and every episode once, with absolute URLs", () => {
+  it("lists every page, episode and transcript once, with absolute URLs", () => {
     const urls = sitemap().map((entry) => entry.url);
     const paths = urls.map((url) => new URL(url).pathname);
     expect(paths).toEqual(
@@ -60,7 +60,10 @@ describe("sitemap and robots", () => {
         "/guest-privacy",
       ]),
     );
-    for (const episode of getAllEpisodes()) expect(paths).toContain(`/episodes/${episode.slug}`);
+    for (const episode of getAllEpisodes()) {
+      expect(paths).toContain(`/episodes/${episode.slug}`);
+      expect(paths).toContain(`/episodes/${episode.slug}/transcript`);
+    }
     expect(new Set(urls).size).toBe(urls.length);
     expect(urls.every((url) => url.startsWith(siteConfig.url))).toBe(true);
   });

@@ -1,10 +1,12 @@
 import { Section } from "@/components/layout/Section";
 import { ExternalLink } from "@/components/ui/external-link";
+import { getEpisodeTranscript } from "@/lib/episodes/transcripts";
 import type { EpisodeView } from "@/lib/episodes/types";
 import { platformLinks } from "@/lib/site";
 
 import { EpisodeChapters } from "./EpisodeChapters";
-import { EpisodeDetailTabs } from "./EpisodeDetailTabs";
+import { type EpisodeDetailTab, EpisodeDetailTabs } from "./EpisodeDetailTabs";
+import { EpisodeTranscriptPreview } from "./EpisodeTranscript";
 import { ShowMoreList } from "./ShowMoreList";
 
 const showListenLinks = platformLinks.filter(
@@ -15,8 +17,9 @@ const externalLinkClass =
   "inline-flex min-h-11 items-center gap-1.5 font-bold text-navy underline underline-offset-4 hover:text-slate";
 
 /**
- * About / Chapters tabs and links (spec §5.3 items 5–7). Everything here comes from the published
- * show notes or host-checked editorial data; topics appear only once reviewed.
+ * About / Chapters / Transcript tabs and links (spec §5.3 items 5–7). Everything here comes from
+ * the published show notes, the synced Fusebox transcript or host-checked editorial data; topics
+ * appear only once reviewed.
  */
 export function EpisodeEditorial({ episode }: { episode: EpisodeView }) {
   const { paragraphs, takeaways, chapters } = episode.showNotes;
@@ -63,6 +66,35 @@ export function EpisodeEditorial({ episode }: { episode: EpisodeView }) {
     </div>
   );
 
+  const transcript = getEpisodeTranscript(episode.slug);
+  const tabs: EpisodeDetailTab[] = [{ value: "about", label: "About", content: about }];
+  if (chapters.length > 0) {
+    tabs.push({
+      value: "chapters",
+      label: (
+        <>
+          {/* Full colour, not faded: the count must meet 4.5:1 contrast like the label. */}
+          Chapters <span className="font-semibold">({chapters.length})</span>
+        </>
+      ),
+      content: (
+        <div className="max-w-3xl">
+          <p className="mb-4 text-sm text-slate">
+            Times follow the audio. Pick one to start listening from there.
+          </p>
+          <EpisodeChapters chapters={chapters} />
+        </div>
+      ),
+    });
+  }
+  if (transcript) {
+    tabs.push({
+      value: "transcript",
+      label: "Transcript",
+      content: <EpisodeTranscriptPreview slug={episode.slug} turns={transcript} />,
+    });
+  }
+
   return (
     <Section tone="paper" aria-labelledby={`about-episode-${episode.slug}`}>
       <h2
@@ -72,22 +104,7 @@ export function EpisodeEditorial({ episode }: { episode: EpisodeView }) {
         The conversation
       </h2>
 
-      {chapters.length > 0 ? (
-        <EpisodeDetailTabs
-          about={about}
-          chapterCount={chapters.length}
-          chapters={
-            <div className="max-w-3xl">
-              <p className="mb-4 text-sm text-slate">
-                Times follow the audio. Pick one to start listening from there.
-              </p>
-              <EpisodeChapters chapters={chapters} />
-            </div>
-          }
-        />
-      ) : (
-        about
-      )}
+      {tabs.length > 1 ? <EpisodeDetailTabs tabs={tabs} /> : about}
 
       <div className="mt-12 flex flex-wrap gap-x-16 gap-y-8 border-t border-line-light pt-8">
         <div>

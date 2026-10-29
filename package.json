@@ -13,6 +13,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "sync:episodes": "tsx scripts/sync-episodes.ts",
+    "sync:transcripts": "tsx scripts/sync-transcripts.ts",
     "fixture:refresh": "tsx scripts/refresh-feed-fixture.ts",
     "assets:brand": "tsx scripts/build-brand-assets.ts",
     "assets:hero": "tsx scripts/build-hero-art.ts",

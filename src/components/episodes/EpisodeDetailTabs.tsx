@@ -3,36 +3,30 @@
 import { Tabs } from "@base-ui/react/tabs";
 import type { ReactNode } from "react";
 
-/** About / Chapters switch. Both panels stay in the HTML so the hidden one is still indexable. */
-export function EpisodeDetailTabs({
-  about,
-  chapters,
-  chapterCount,
-}: {
-  about: ReactNode;
-  chapters: ReactNode;
-  chapterCount: number;
-}) {
+export type EpisodeDetailTab = { value: string; label: ReactNode; content: ReactNode };
+
+/**
+ * About / Chapters / Transcript switch; the first tab is selected. Every panel stays in the HTML
+ * so the hidden ones are still indexable.
+ */
+export function EpisodeDetailTabs({ tabs }: { tabs: readonly EpisodeDetailTab[] }) {
   return (
-    <Tabs.Root defaultValue="about">
+    <Tabs.Root defaultValue={tabs[0]?.value}>
       <Tabs.List
         aria-label="Episode details"
-        className="mb-8 inline-flex gap-1 rounded-full border border-line-light p-1"
+        className="mb-8 inline-flex flex-wrap gap-1 rounded-full border border-line-light p-1"
       >
-        <Tabs.Tab value="about" className="section-tab">
-          About
-        </Tabs.Tab>
-        <Tabs.Tab value="chapters" className="section-tab">
-          {/* Full colour, not faded: the count must meet 4.5:1 contrast like the label. */}
-          Chapters <span className="font-semibold">({chapterCount})</span>
-        </Tabs.Tab>
+        {tabs.map((tab) => (
+          <Tabs.Tab key={tab.value} value={tab.value} className="section-tab">
+            {tab.label}
+          </Tabs.Tab>
+        ))}
       </Tabs.List>
-      <Tabs.Panel value="about" keepMounted>
-        {about}
-      </Tabs.Panel>
-      <Tabs.Panel value="chapters" keepMounted>
-        {chapters}
-      </Tabs.Panel>
+      {tabs.map((tab) => (
+        <Tabs.Panel key={tab.value} value={tab.value} keepMounted>
+          {tab.content}
+        </Tabs.Panel>
+      ))}
     </Tabs.Root>
   );
 }

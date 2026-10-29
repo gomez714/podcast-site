@@ -7,6 +7,7 @@ const knownSlugs = new Set(Object.values(episodeSlugsByGuid));
 /**
  * The episode page streams from a Suspense boundary, so a `notFound()` there can only send a
  * 200 with `noindex`. Rejecting unknown slugs here, before rendering, keeps a real 404 status.
+ * The same goes for each episode's transcript page.
  */
 export function proxy(request: NextRequest) {
   const slug = request.nextUrl.pathname.split("/")[2];
@@ -17,5 +18,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: "/episodes/:slug",
+  matcher: ["/episodes/:slug", "/episodes/:slug/transcript"],
 };
