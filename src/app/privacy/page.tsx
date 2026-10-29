@@ -14,7 +14,7 @@ export const metadata: Metadata = pageMetadata({
 });
 
 /** Bump when the notice changes. */
-const LAST_UPDATED = { iso: "2026-10-28", label: "October 28, 2026" };
+const LAST_UPDATED = { iso: "2026-10-29", label: "October 29, 2026" };
 
 const linkClass = "font-bold text-navy underline underline-offset-4 hover:text-slate";
 
@@ -49,10 +49,10 @@ export default function PrivacyPage() {
 
           <NoticeSection heading="Listening to episodes">
             <p>
-              Episode audio is hosted by Fusebox, the show&apos;s podcast host. When you open an
-              episode page, your browser asks Fusebox for basic details about the audio file, such
-              as its length. When you press play, the audio streams from Fusebox. Like any request
-              to another website, this shares your IP address and browser details with Fusebox.
+              Episode audio is hosted by Fusebox, the show&apos;s podcast host. Opening an episode
+              page doesn&apos;t contact Fusebox; nothing is requested until you press play, and then
+              the audio streams from Fusebox. Like any request to another website, this shares your
+              IP address and browser details with Fusebox.
             </p>
             <p>
               See the{" "}

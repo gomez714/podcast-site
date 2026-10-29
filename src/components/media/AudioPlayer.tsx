@@ -151,7 +151,7 @@ export function AudioPlayer({
     else void play();
   }, [play, state.status]);
 
-  const seekTo = useCallback(
+  const applySeek = useCallback(
     (target: number) => {
       const audio = audioRef.current;
       if (!audio) return;
@@ -160,6 +160,30 @@ export function AudioPlayer({
       audio.currentTime = clampSeek(target, limit);
     },
     [durationHint],
+  );
+
+  /** Seeks once the audio's length is known, and starts playback; only call from a user action. */
+  const playFrom = useCallback(
+    (seconds: number) => {
+      const audio = audioRef.current;
+      if (!audio) return;
+      if (audio.readyState >= HTMLMediaElement.HAVE_METADATA) applySeek(seconds);
+      else audio.addEventListener("loadedmetadata", () => applySeek(seconds), { once: true });
+      void play();
+    },
+    [applySeek, play],
+  );
+
+  // With preload="none" nothing is loaded before the first play, so a seek then would be lost.
+  // Dragging the bar, a skip button or a chapter before playing starts the episode from there.
+  const seekTo = useCallback(
+    (target: number) => {
+      const audio = audioRef.current;
+      if (!audio) return;
+      if (audio.readyState === HTMLMediaElement.HAVE_NOTHING && audio.paused) playFrom(target);
+      else applySeek(target);
+    },
+    [applySeek, playFrom],
   );
 
   const skip = useCallback(
@@ -171,16 +195,10 @@ export function AudioPlayer({
     ref,
     () => ({
       pause: () => audioRef.current?.pause(),
-      playFrom: (seconds) => {
-        const audio = audioRef.current;
-        if (!audio) return;
-        if (audio.readyState >= HTMLMediaElement.HAVE_METADATA) seekTo(seconds);
-        else audio.addEventListener("loadedmetadata", () => seekTo(seconds), { once: true });
-        void play();
-      },
+      playFrom,
       toggle,
     }),
-    [play, seekTo, toggle],
+    [playFrom, toggle],
   );
 
   /** One manual retry per press; never retries on its own (spec §7.4). */
@@ -283,7 +301,13 @@ export function AudioPlayer({
         </div>
       )}
 
-      <audio ref={audioRef} src={src} preload="metadata" className="hidden" />
+      {/*
+        preload="none" (host's decision, Oct 29, 2026): nothing is requested from Fusebox until
+        someone presses play. With "metadata", every episode page view fetched 220 KB–1 MB of
+        audio through Fusebox's tracked URL, and Fusebox counted those views as listens. The
+        length shown before play comes from the RSS feed (`durationHint`).
+      */}
+      <audio ref={audioRef} src={src} preload="none" className="hidden" />
       {/*
         Without JavaScript the browser's own player is shown instead. The custom controls are
         server-rendered too (and hidden when scripting is off), so the page doesn't jump when
