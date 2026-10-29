@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { CopyLink } from "@/components/ui/copy-link";
 import { ExternalLink } from "@/components/ui/external-link";
 import { mainNav, platformLinks, secondaryNav, siteConfig } from "@/lib/site";
 
@@ -37,9 +38,14 @@ export function SiteFooter() {
               </li>
             ))}
             <li>
-              <ExternalLink href={siteConfig.rssUrl} className={platformLinkClass}>
-                RSS feed
-              </ExternalLink>
+              {/* Copied, not opened: the feed is only useful pasted into a podcast app, and opening it shows raw XML. */}
+              <CopyLink
+                href={siteConfig.rssUrl}
+                label="Copy RSS feed"
+                copiedLabel="Feed link copied"
+                announcement="RSS feed link copied. Paste it into your podcast app to follow the show."
+                className={platformLinkClass}
+              />
             </li>
           </ul>
         </section>

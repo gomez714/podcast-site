@@ -50,7 +50,15 @@ describe("sitemap and robots", () => {
     const urls = sitemap().map((entry) => entry.url);
     const paths = urls.map((url) => new URL(url).pathname);
     expect(paths).toEqual(
-      expect.arrayContaining(["/", "/episodes", "/about", "/contact", "/privacy"]),
+      expect.arrayContaining([
+        "/",
+        "/episodes",
+        "/about",
+        "/be-a-guest",
+        "/contact",
+        "/privacy",
+        "/guest-privacy",
+      ]),
     );
     for (const episode of getAllEpisodes()) expect(paths).toContain(`/episodes/${episode.slug}`);
     expect(new Set(urls).size).toBe(urls.length);

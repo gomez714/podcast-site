@@ -28,6 +28,7 @@ export const mainNav: NavItem[] = [
 
 /** Footer-only pages, listed after the main navigation in the footer's bottom bar. */
 export const secondaryNav: NavItem[] = [
+  { label: "Be a guest", href: "/be-a-guest" },
   { label: "Contact", href: "/contact" },
   { label: "Privacy", href: "/privacy" },
 ];

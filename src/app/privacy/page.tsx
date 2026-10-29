@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import type { ReactNode } from "react";
 
+import { NoticeSection } from "@/components/layout/NoticeSection";
 import { Section } from "@/components/layout/Section";
 import { ExternalLink } from "@/components/ui/external-link";
 import { pageMetadata } from "@/lib/metadata";
@@ -14,21 +14,12 @@ export const metadata: Metadata = pageMetadata({
 });
 
 /** Bump when the notice changes. */
-const LAST_UPDATED = { iso: "2026-10-16", label: "October 16, 2026" };
+const LAST_UPDATED = { iso: "2026-10-28", label: "October 28, 2026" };
 
 const linkClass = "font-bold text-navy underline underline-offset-4 hover:text-slate";
 
-function Block({ heading, children }: { heading: string; children: ReactNode }) {
-  return (
-    <section className="mt-10 first:mt-0">
-      <h2 className="text-lg font-bold text-navy">{heading}</h2>
-      <div className="mt-3 space-y-4">{children}</div>
-    </section>
-  );
-}
-
 /**
- * Privacy notice (spec §12.6). DRAFT for the host to review before launch. It describes only what
+ * Privacy notice (spec §12.6), approved by the host on Oct 28, 2026. It describes only what
  * the site actually does today: no cookies, no analytics, no forms, and third parties only for
  * playback. If analytics are added (e.g. Vercel Web Analytics), add an "Analytics" block below.
  */
@@ -43,22 +34,19 @@ export default function PrivacyPage() {
         <p className="mt-6 text-pale">
           Last updated <time dateTime={LAST_UPDATED.iso}>{LAST_UPDATED.label}</time>
         </p>
-        <p className="mt-5 inline-flex items-center gap-2 rounded-sm border border-dashed border-ice px-3 py-2 text-xs font-bold tracking-[0.08em] text-ice uppercase">
-          Draft · review before launch
-        </p>
       </Section>
 
       <Section tone="paper" aria-label="Privacy notice details">
         <div className="max-w-[68ch] text-slate">
-          <Block heading="The short version">
+          <NoticeSection heading="The short version">
             <p>
               This website doesn&apos;t use cookies, doesn&apos;t run analytics or advertising
               trackers, and has no accounts or forms, so it doesn&apos;t ask you for any personal
               information. A few outside services are involved in playing episodes, explained below.
             </p>
-          </Block>
+          </NoticeSection>
 
-          <Block heading="Listening to episodes">
+          <NoticeSection heading="Listening to episodes">
             <p>
               Episode audio is hosted by Fusebox, the show&apos;s podcast host. When you open an
               episode page, your browser asks Fusebox for basic details about the audio file, such
@@ -72,9 +60,9 @@ export default function PrivacyPage() {
               </ExternalLink>
               .
             </p>
-          </Block>
+          </NoticeSection>
 
-          <Block heading="Watching videos">
+          <NoticeSection heading="Watching videos">
             <p>
               Filmed episodes can be watched through YouTube, using its privacy-enhanced mode
               (youtube-nocookie.com). Nothing loads from YouTube until you press a video&apos;s play
@@ -88,9 +76,9 @@ export default function PrivacyPage() {
               </ExternalLink>
               .
             </p>
-          </Block>
+          </NoticeSection>
 
-          <Block heading="Hosting">
+          <NoticeSection heading="Hosting">
             <p>
               The site is hosted by Vercel. Like any web host, it processes basic request details,
               such as IP addresses, to deliver pages and keep the service secure.
@@ -102,23 +90,33 @@ export default function PrivacyPage() {
               </ExternalLink>
               .
             </p>
-          </Block>
+          </NoticeSection>
 
-          <Block heading="Fonts and images">
+          <NoticeSection heading="Fonts and images">
             <p>
               Fonts and images are served from this site, so viewing a page doesn&apos;t contact a
               font service or image host.
             </p>
-          </Block>
+          </NoticeSection>
 
-          <Block heading="Links to other sites">
+          <NoticeSection heading="Links to other sites">
             <p>
-              Links to Apple Podcasts, Spotify, YouTube, Instagram and the RSS feed open in a new
-              tab. Those services have their own privacy policies.
+              Links to Apple Podcasts, Spotify, YouTube and Instagram open in a new tab. Those
+              services have their own privacy policies.
             </p>
-          </Block>
+          </NoticeSection>
 
-          <Block heading="Questions and changes">
+          <NoticeSection heading="Guests">
+            <p>
+              If you contact the show about being a guest, or appear on it, the{" "}
+              <Link href="/guest-privacy" className={linkClass}>
+                guest privacy notice
+              </Link>{" "}
+              explains how that information is handled.
+            </p>
+          </NoticeSection>
+
+          <NoticeSection heading="Questions and changes">
             <p>
               If you have a question about this notice, see the{" "}
               <Link href="/contact" className={linkClass}>
@@ -127,7 +125,7 @@ export default function PrivacyPage() {
               . If the site&apos;s practices change, for example by adding analytics, this page will
               be updated and the date above will change.
             </p>
-          </Block>
+          </NoticeSection>
         </div>
       </Section>
     </>

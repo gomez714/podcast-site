@@ -19,7 +19,7 @@ export const episodeEditorial: EpisodeEditorial[] = [
     summary:
       "Luis introduces the show: the Johari window idea behind its name, his path from performing artist to software developer, and why he wanted to share extraordinary stories from ordinary lives.",
     topics: ["Johari window", "Career change", "Performing arts", "Software development"],
-    reviewStatus: "draft",
+    reviewStatus: "reviewed",
   },
   {
     slug: "ep-2-razie",
@@ -28,7 +28,7 @@ export const episodeEditorial: EpisodeEditorial[] = [
       "Razie, a life coach known as the “Lady Boss,” on her journey from Iran to coaching women around the world, and why self-confidence and community sit at the heart of her work.",
     topics: ["Women's empowerment", "Self-confidence", "Coaching", "Moving countries"],
     youtubeId: "rZYuHvRtIfs",
-    reviewStatus: "draft",
+    reviewStatus: "reviewed",
   },
   {
     slug: "ep-3-simon-guerard",
@@ -37,7 +37,11 @@ export const episodeEditorial: EpisodeEditorial[] = [
       "A French Canadian scientist and trail runner on going from weekend hikes to ultra-marathons, what the running community gave him, and what long races taught him about limits.",
     topics: ["Ultra-marathons", "Running community", "Science and medicine"],
     youtubeId: "6V13XHmXtB0",
-    reviewStatus: "draft",
+    guestLinks: [
+      { label: "YouTube", href: "https://www.youtube.com/channel/UCwJaLh1vVoPcEL4EHW7dxog" },
+      { label: "Instagram", href: "https://www.instagram.com/runningwithsimon" },
+    ],
+    reviewStatus: "reviewed",
   },
   {
     slug: "ep-4-kate-conwell",
@@ -47,7 +51,11 @@ export const episodeEditorial: EpisodeEditorial[] = [
     topics: ["Healing", "Infidelity", "Faith", "Supporting women"],
     contentNote: "Discusses marital infidelity and betrayal.",
     youtubeId: "oB3d_5n_78g",
-    reviewStatus: "draft",
+    guestLinks: [
+      { label: "Journey Beyond Betrayal", href: "https://www.journeybeyondbetrayal.com/help" },
+      { label: "Instagram", href: "https://www.instagram.com/journeybeyondbetrayal/" },
+    ],
+    reviewStatus: "reviewed",
   },
   {
     slug: "ep-5-devin",
@@ -57,7 +65,10 @@ export const episodeEditorial: EpisodeEditorial[] = [
     topics: ["Yerba mate", "Sobriety", "Ultra-marathons", "Podcasting"],
     contentNote: "Discusses addiction and recovery.",
     youtubeId: "xMEMoh62Yo0",
-    reviewStatus: "draft",
+    guestLinks: [
+      { label: "Yerba Mate Power on Instagram", href: "https://www.instagram.com/yerbamatepower" },
+    ],
+    reviewStatus: "reviewed",
   },
   {
     slug: "ep-6-jurate-wolfe",
@@ -66,7 +77,11 @@ export const episodeEditorial: EpisodeEditorial[] = [
       "From Lithuania to the Kennedy Space Center: Jurate talks about human factors work on space missions, being a woman in STEM, and where science and astrology meet in her life.",
     topics: ["Space science", "Women in STEM", "Astrology"],
     youtubeId: "dtiLIAXVPUU",
-    reviewStatus: "draft",
+    guestLinks: [
+      { label: "Instagram", href: "https://www.instagram.com/empiricalmystic/" },
+      { label: "LinkedIn", href: "https://www.linkedin.com/in/juratelwolfe/" },
+    ],
+    reviewStatus: "reviewed",
   },
   {
     slug: "ep-7-alekson",
@@ -75,7 +90,7 @@ export const episodeEditorial: EpisodeEditorial[] = [
       "Alekson on leaving Brazil for a tech career in Canada: learning French in Quebec, cultural differences, setbacks, and his mission to help other Brazilians build careers abroad.",
     topics: ["Technology careers", "Moving countries", "Self-development"],
     youtubeId: "C8f4mPhpIb8",
-    reviewStatus: "draft",
+    reviewStatus: "reviewed",
   },
   {
     slug: "ep-8-yuko-sasaki",
@@ -83,7 +98,7 @@ export const episodeEditorial: EpisodeEditorial[] = [
     summary:
       "Yuko left Tokyo for the United States looking for a life with fewer rules. She talks about culture shock, building a career in restaurants, and wanting to inspire women in Japan.",
     topics: ["Moving countries", "Culture shock", "Work-life balance", "Authenticity"],
-    reviewStatus: "draft",
+    reviewStatus: "reviewed",
   },
 ];
 

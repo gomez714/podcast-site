@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { Section } from "@/components/layout/Section";
 import { ExternalLink } from "@/components/ui/external-link";
@@ -44,6 +45,13 @@ export default function ContactPage() {
             </p>
           )}
         </div>
+
+        <Link
+          href="/be-a-guest"
+          className="mt-8 inline-flex min-h-11 items-center gap-2 text-sm font-extrabold text-white underline decoration-ice decoration-2 underline-offset-[6px] hover:decoration-white"
+        >
+          Interested in being a guest? See how it works <span aria-hidden="true">→</span>
+        </Link>
       </Section>
 
       <Section tone="light" aria-labelledby="contact-follow">

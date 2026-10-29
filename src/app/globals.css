@@ -19,6 +19,8 @@
   --brand-ice: #91d6ff;
   --brand-pale: #c8f7ff;
   --brand-white: #ffffff;
+  /* Hero recording light only. */
+  --brand-rec: #ff4b4b;
 
   --surface-dark: var(--brand-navy);
   --surface-light: var(--brand-pale);
@@ -61,6 +63,7 @@
   --color-bright: var(--brand-bright);
   --color-ice: var(--brand-ice);
   --color-pale: var(--brand-pale);
+  --color-rec: var(--brand-rec);
   --color-line-dark: var(--line-on-dark);
   --color-line-light: var(--line-on-light);
 
@@ -168,6 +171,62 @@
     .hero-still {
       display: inline;
     }
+  }
+}
+
+/*
+ * "A new chapter is coming" recording light in the homepage hero (host's choice, Oct 28, 2026).
+ * The only red on the site, so keep it to this one element. Under reduced motion it stays lit.
+ */
+@layer components {
+  .recording-light {
+    position: relative;
+    flex: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--brand-rec);
+    box-shadow: 0 0 9px 2px rgb(255 75 75 / 0.7);
+    animation: recording-blink 1.6s ease-in-out infinite;
+  }
+
+  .recording-light::after {
+    content: "";
+    position: absolute;
+    inset: -5px;
+    border: 2px solid var(--brand-rec);
+    border-radius: 50%;
+    opacity: 0;
+    animation: recording-ring 1.6s ease-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .recording-light,
+    .recording-light::after {
+      animation: none;
+    }
+  }
+}
+
+@keyframes recording-blink {
+  0%,
+  55%,
+  100% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 0.25;
+  }
+}
+
+@keyframes recording-ring {
+  from {
+    opacity: 0.7;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.6);
   }
 }
 
