@@ -34,6 +34,8 @@ describe("content security policy", () => {
 
   it("only allows eval and websockets in development", () => {
     expect(directive(policy, "script-src")).not.toContain("'unsafe-eval'");
+    // Analytics and Speed Insights load from this site in production; only dev uses the CDN.
+    expect(directive(policy, "script-src")).toEqual(["'self'", "'unsafe-inline'"]);
     expect(directive(policy, "connect-src")).toEqual(["'self'"]);
     const dev = contentSecurityPolicy({ dev: true });
     expect(directive(dev, "script-src")).toContain("'unsafe-eval'");

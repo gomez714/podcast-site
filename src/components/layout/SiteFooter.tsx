@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { CopyLink } from "@/components/ui/copy-link";
 import { ExternalLink } from "@/components/ui/external-link";
+import { ANALYTICS_EVENTS, trackClicks } from "@/lib/analytics";
 import { mainNav, platformLinks, secondaryNav, siteConfig } from "@/lib/site";
 
 import { Container } from "./Container";
@@ -32,12 +33,24 @@ export function SiteFooter() {
           <ul className="mt-4 flex flex-wrap gap-2.5">
             {platformLinks.map((platform) => (
               <li key={platform.href}>
-                <ExternalLink href={platform.href} className={platformLinkClass}>
+                <ExternalLink
+                  href={platform.href}
+                  className={platformLinkClass}
+                  {...trackClicks(ANALYTICS_EVENTS.platformClick, {
+                    platform: platform.label,
+                    placement: "Footer",
+                  })}
+                >
                   {platform.label}
                 </ExternalLink>
               </li>
             ))}
-            <li>
+            <li
+              {...trackClicks(ANALYTICS_EVENTS.platformClick, {
+                platform: "RSS feed",
+                placement: "Footer",
+              })}
+            >
               {/* Copied, not opened: the feed is only useful pasted into a podcast app, and opening it shows raw XML. */}
               <CopyLink
                 href={siteConfig.rssUrl}

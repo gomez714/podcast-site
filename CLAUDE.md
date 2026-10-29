@@ -66,6 +66,8 @@ Data and asset scripts (run with `tsx`, from `scripts/`):
 
 **Security headers.** `src/lib/security-headers.ts` (applied in `next.config.ts`) sets a fixed Content Security Policy plus HSTS, nosniff, Referrer-Policy, X-Frame-Options and Permissions-Policy. It's fixed rather than nonce-based so pages stay prerendered. **Any new third-party host (audio, iframe, image, script) must be added there, or the browser silently blocks it.** `tests/unit/security-headers.test.ts` checks that the Fusebox audio and the guest form's hosts are allowed.
 
+**Analytics.** Vercel Web Analytics and Speed Insights (cookieless) are mounted in the root layout. Custom events are defined in `src/lib/analytics.ts`: Platform click, Play pressed, Guest application and Tagged visit, with at most 2 properties each, as the plan allows, and never personal data. To track a server-rendered link, spread `trackClicks(event, props)` onto it (or a wrapper), and `components/analytics/ClickTracking` reports the click. If you add or change an event, update the "Analytics" section of `/privacy`.
+
 **Guest application.** A Google Form owned by the host (`guestApplicationForm` in `src/lib/site.ts`), shown on `/be-a-guest` by `components/guest/GuestApplication`. Like the YouTube poster, nothing loads from Google until it's pressed: from `md` up it embeds in place, and on phones it opens in a new tab. `/privacy` and `/guest-privacy` disclose it, so update both if the form or its service changes.
 
 **Hero.** `src/components/home/HeroArtwork.tsx` layers PNGs from `public/images/hero/` (built from `assets/brand/source/CoverArt.psd`) with an SVG door from `hero-geometry.json`, animated with SVG `<animate>` (no JS) and a still state under reduced motion.

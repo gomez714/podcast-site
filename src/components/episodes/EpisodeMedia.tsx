@@ -18,6 +18,7 @@ import { AudioPlayer, type AudioPlayerHandle } from "@/components/media/AudioPla
 import { MiniPlayer } from "@/components/media/MiniPlayer";
 import { VideoEmbed, type VideoEmbedHandle } from "@/components/media/VideoEmbed";
 import { ExternalLink } from "@/components/ui/external-link";
+import { ANALYTICS_EVENTS, trackClicks } from "@/lib/analytics";
 import type { EpisodeArtwork } from "@/lib/episodes/types";
 import { initialPlaybackSnapshot, type PlaybackSnapshot } from "@/lib/media/player-state";
 
@@ -181,6 +182,10 @@ export function EpisodeMedia({
           <ExternalLink
             href={`https://www.youtube.com/watch?v=${youtubeId}`}
             className="font-bold text-white underline underline-offset-4"
+            {...trackClicks(ANALYTICS_EVENTS.platformClick, {
+              platform: "YouTube",
+              placement: "Episode video",
+            })}
           >
             Watch on YouTube
           </ExternalLink>

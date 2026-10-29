@@ -5,6 +5,7 @@ import { Section } from "@/components/layout/Section";
 import { ExternalLink } from "@/components/ui/external-link";
 import { getAllEpisodes } from "@/lib/episodes/repository";
 import { pageMetadata } from "@/lib/metadata";
+import { ANALYTICS_EVENTS, trackClicks } from "@/lib/analytics";
 import { platformLinks } from "@/lib/site";
 
 export const metadata: Metadata = pageMetadata({
@@ -54,6 +55,10 @@ export default function EpisodesPage() {
                     <ExternalLink
                       href={link.href}
                       className="font-bold text-navy underline underline-offset-4"
+                      {...trackClicks(ANALYTICS_EVENTS.platformClick, {
+                        platform: link.label,
+                        placement: "Episodes page",
+                      })}
                     >
                       {link.label}
                     </ExternalLink>

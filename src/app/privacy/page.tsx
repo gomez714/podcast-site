@@ -20,8 +20,10 @@ const linkClass = "font-bold text-navy underline underline-offset-4 hover:text-s
 
 /**
  * Privacy notice (spec §12.6), approved by the host on Oct 28, 2026. It describes only what
- * the site actually does today: no cookies, no analytics, third parties only for playback, and
- * the guest application's Google Form, loaded only on request. If analytics are added (e.g. Vercel Web Analytics), add an "Analytics" block below.
+ * the site actually does today: no cookies, cookie-free Vercel Web Analytics and Speed Insights
+ * (with the custom events in `src/lib/analytics.ts`), third parties only for playback, and the
+ * guest application's Google Form, loaded only on request. Update the "Analytics" block if events
+ * change.
  */
 export default function PrivacyPage() {
   return (
@@ -40,10 +42,11 @@ export default function PrivacyPage() {
         <div className="max-w-[68ch] text-slate">
           <NoticeSection heading="The short version">
             <p>
-              This website doesn&apos;t use cookies, doesn&apos;t run analytics or advertising
-              trackers, and has no accounts. The only form is the optional guest application, run by
-              Google Forms, which loads only if you open it. A few outside services are involved in
-              playing episodes, explained below.
+              This website doesn&apos;t use cookies or advertising trackers, and has no accounts. It
+              counts visits and a few clicks with cookie-free analytics, so the show can see which
+              episodes people find and whether they go on to follow it. The only form is the
+              optional guest application, run by Google Forms, which loads only if you open it. A
+              few outside services are involved in playing episodes, explained below.
             </p>
           </NoticeSection>
 
@@ -83,6 +86,29 @@ export default function PrivacyPage() {
             <p>
               The site is hosted by Vercel. Like any web host, it processes basic request details,
               such as IP addresses, to deliver pages and keep the service secure.
+            </p>
+            <p>
+              See the{" "}
+              <ExternalLink href="https://vercel.com/legal/privacy-notice" className={linkClass}>
+                Vercel privacy notice
+              </ExternalLink>
+              .
+            </p>
+          </NoticeSection>
+
+          <NoticeSection heading="Analytics">
+            <p>
+              The site uses Vercel Web Analytics and Speed Insights. They count page views, where
+              visits come from (for example Instagram or a search engine), the country, the type of
+              device and browser, and how quickly pages load. They also count a few clicks: links to
+              the show on listening apps and social media, pressing play, and opening the guest
+              application. They don&apos;t record anything you type, and no names or email addresses
+              are sent.
+            </p>
+            <p>
+              No cookies are used. Vercel tells visits apart using a code made from the request that
+              resets every day, rather than storing anything on your device, and the show only sees
+              totals, not individual visitors.
             </p>
             <p>
               See the{" "}
@@ -142,8 +168,8 @@ export default function PrivacyPage() {
               <Link href="/contact" className={linkClass}>
                 contact page
               </Link>
-              . If the site&apos;s practices change, for example by adding analytics, this page will
-              be updated and the date above will change.
+              . If the site&apos;s practices change, for example by counting something new, this
+              page will be updated and the date above will change.
             </p>
           </NoticeSection>
         </div>

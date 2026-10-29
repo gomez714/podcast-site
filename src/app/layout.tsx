@@ -1,6 +1,9 @@
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
 import { Barlow_Condensed, Manrope } from "next/font/google";
 
+import { ClickTracking } from "@/components/analytics/ClickTracking";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { siteConfig } from "@/lib/site";
@@ -72,6 +75,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
         <SiteFooter />
+        {/* Cookieless Vercel Web Analytics and Speed Insights (host's choice, Oct 29, 2026; see /privacy). */}
+        <Analytics />
+        <SpeedInsights />
+        <ClickTracking />
       </body>
     </html>
   );

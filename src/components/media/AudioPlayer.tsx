@@ -1,5 +1,6 @@
 "use client";
 
+import { track } from "@vercel/analytics";
 import { cn } from "cn";
 import { RefreshCw, Volume2, VolumeX } from "lucide-react";
 import Image from "next/image";
@@ -14,6 +15,7 @@ import {
   type Ref,
 } from "react";
 
+import { ANALYTICS_EVENTS } from "@/lib/analytics";
 import {
   initialPlayerState,
   playerReducer,
@@ -144,12 +146,21 @@ export function AudioPlayer({
     }
   }, []);
 
+  /** Counted once per press that starts playback; a press isn't a listen (Fusebox counts those). */
+  const trackPlay = useCallback(
+    () => track(ANALYTICS_EVENTS.playPressed, { episode: title }),
+    [title],
+  );
+
   const toggle = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
     if (state.status === "playing" || state.status === "loading") audio.pause();
-    else void play();
-  }, [play, state.status]);
+    else {
+      trackPlay();
+      void play();
+    }
+  }, [play, state.status, trackPlay]);
 
   const applySeek = useCallback(
     (target: number) => {
@@ -169,9 +180,10 @@ export function AudioPlayer({
       if (!audio) return;
       if (audio.readyState >= HTMLMediaElement.HAVE_METADATA) applySeek(seconds);
       else audio.addEventListener("loadedmetadata", () => applySeek(seconds), { once: true });
+      if (audio.paused) trackPlay();
       void play();
     },
-    [applySeek, play],
+    [applySeek, play, trackPlay],
   );
 
   // With preload="none" nothing is loaded before the first play, so a seek then would be lost.

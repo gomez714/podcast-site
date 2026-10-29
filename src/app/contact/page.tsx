@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Section } from "@/components/layout/Section";
 import { ExternalLink } from "@/components/ui/external-link";
 import { pageMetadata } from "@/lib/metadata";
+import { ANALYTICS_EVENTS, trackClicks } from "@/lib/analytics";
 import { contactEmail, platformLinks, siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = pageMetadata({
@@ -67,7 +68,14 @@ export default function ContactPage() {
         <ul className="mt-6 flex flex-wrap gap-2.5">
           {platformLinks.map((platform) => (
             <li key={platform.href}>
-              <ExternalLink href={platform.href} className={platformLinkClass}>
+              <ExternalLink
+                href={platform.href}
+                className={platformLinkClass}
+                {...trackClicks(ANALYTICS_EVENTS.platformClick, {
+                  platform: platform.label,
+                  placement: "Contact page",
+                })}
+              >
                 {platform.label}
               </ExternalLink>
             </li>

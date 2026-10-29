@@ -1,8 +1,10 @@
 "use client";
 
+import { track } from "@vercel/analytics";
 import { type MouseEvent, useEffect, useRef, useState } from "react";
 
 import { buttonVariants } from "@/components/ui/button";
+import { ANALYTICS_EVENTS } from "@/lib/analytics";
 import { guestApplicationForm } from "@/lib/site";
 import { cn } from "cn";
 
@@ -28,8 +30,12 @@ export function GuestApplication({ className }: { className?: string }) {
   }, [open]);
 
   function openHere(event: MouseEvent<HTMLAnchorElement>) {
-    if (!window.matchMedia(EMBED_QUERY).matches) return;
+    if (!window.matchMedia(EMBED_QUERY).matches) {
+      track(ANALYTICS_EVENTS.guestApplication, { action: "Opened form in new tab" });
+      return;
+    }
     event.preventDefault();
+    track(ANALYTICS_EVENTS.guestApplication, { action: "Opened form on page" });
     setOpen(true);
   }
 
@@ -69,6 +75,9 @@ export function GuestApplication({ className }: { className?: string }) {
           target="_blank"
           rel="noreferrer"
           className="hidden font-bold text-ice underline underline-offset-4 hover:text-white md:inline"
+          onClick={() =>
+            track(ANALYTICS_EVENTS.guestApplication, { action: "Opened form in new tab" })
+          }
         >
           Open it in a new tab instead <span aria-hidden="true">↗</span>
           <span className="sr-only"> (opens in a new tab)</span>

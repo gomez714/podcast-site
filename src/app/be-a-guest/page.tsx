@@ -14,6 +14,7 @@ import {
   guestReferral,
   type GuestTopic,
 } from "@/content/guest";
+import { ANALYTICS_EVENTS, trackClicks } from "@/lib/analytics";
 import { pageMetadata } from "@/lib/metadata";
 import { contactEmail, siteConfig } from "@/lib/site";
 
@@ -156,6 +157,7 @@ export default function BeAGuestPage() {
               </dl>
               <ButtonLink
                 href={mailto}
+                {...trackClicks(ANALYTICS_EVENTS.guestApplication, { action: "Email link" })}
                 variant="outline-on-light"
                 className="mt-7 w-full sm:w-auto"
               >

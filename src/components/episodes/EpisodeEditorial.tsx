@@ -1,5 +1,6 @@
 import { Section } from "@/components/layout/Section";
 import { ExternalLink } from "@/components/ui/external-link";
+import { ANALYTICS_EVENTS, trackClicks } from "@/lib/analytics";
 import { getEpisodeTranscript } from "@/lib/episodes/transcripts";
 import type { EpisodeView } from "@/lib/episodes/types";
 import { platformLinks } from "@/lib/site";
@@ -112,7 +113,14 @@ export function EpisodeEditorial({ episode }: { episode: EpisodeView }) {
           <ul className="mt-1 flex flex-wrap gap-x-5 text-sm">
             {listenLinks.map((link) => (
               <li key={link.label}>
-                <ExternalLink href={link.href} className={externalLinkClass}>
+                <ExternalLink
+                  href={link.href}
+                  className={externalLinkClass}
+                  {...trackClicks(ANALYTICS_EVENTS.platformClick, {
+                    platform: link.label,
+                    placement: "Episode page",
+                  })}
+                >
                   {link.label}
                 </ExternalLink>
               </li>

@@ -20,8 +20,10 @@ export const FRAME_HOSTS = ["https://www.youtube-nocookie.com", "https://docs.go
 export function contentSecurityPolicy({ dev = false } = {}): string {
   return [
     "default-src 'self'",
-    // Development only: React uses eval for its error overlay, and HMR talks over a websocket.
-    `script-src 'self' 'unsafe-inline'${dev ? " 'unsafe-eval'" : ""}`,
+    // Development only: React uses eval for its error overlay, HMR talks over a websocket, and
+    // Vercel Analytics/Speed Insights load debug scripts from va.vercel-scripts.com. In production
+    // both load from this site (/_vercel/insights, /_vercel/speed-insights) and report there too.
+    `script-src 'self' 'unsafe-inline'${dev ? " 'unsafe-eval' https://va.vercel-scripts.com" : ""}`,
     "style-src 'self' 'unsafe-inline'",
     // data:/blob: for next/image blur placeholders; every image is served from this site.
     "img-src 'self' data: blob:",
