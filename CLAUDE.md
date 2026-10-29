@@ -61,6 +61,8 @@ Data and asset scripts (run with `tsx`, from `scripts/`):
 
 **Audio player.** `src/components/media/` wraps a native `<audio preload="metadata">` pointed directly at the Fusebox URL. UI state comes from a pure reducer in `src/lib/media/player-state.ts` driven only by media events (no optimistic "playing" state); seek/time helpers are in `src/lib/media/`. The server HTML is a plain `<audio controls>` fallback that the custom UI replaces after hydration. `EpisodeMedia` adds Listen/Watch tabs only when `youtubeId` exists; the YouTube (`youtube-nocookie.com`) iframe loads only after the poster is pressed, and switching tabs pauses the other medium.
 
+**Guest application.** A Google Form owned by the host (`guestApplicationForm` in `src/lib/site.ts`), shown on `/be-a-guest` by `components/guest/GuestApplication`. Like the YouTube poster, nothing loads from Google until it's pressed: from `md` up it embeds in place, and on phones it opens in a new tab. `/privacy` and `/guest-privacy` disclose it, so update both if the form or its service changes.
+
 **Hero.** `src/components/home/HeroArtwork.tsx` layers PNGs from `public/images/hero/` (built from `assets/brand/source/CoverArt.psd`) with an SVG door from `hero-geometry.json`, animated with SVG `<animate>` (no JS) and a still state under reduced motion.
 
 **Styling.** Tailwind 4 (via `@tailwindcss/turbopack`) with brand tokens and shadcn semantic tokens in `src/app/globals.css`; shadcn/ui uses the Base UI primitives (`@base-ui/react`), not Radix. Site name, URLs, nav and verified platform links live in `src/lib/site.ts`. Env vars (`NEXT_PUBLIC_SITE_URL`, `PODCAST_RSS_URL`) are optional; see `.env.example`.

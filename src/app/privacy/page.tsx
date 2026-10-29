@@ -20,8 +20,8 @@ const linkClass = "font-bold text-navy underline underline-offset-4 hover:text-s
 
 /**
  * Privacy notice (spec §12.6), approved by the host on Oct 28, 2026. It describes only what
- * the site actually does today: no cookies, no analytics, no forms, and third parties only for
- * playback. If analytics are added (e.g. Vercel Web Analytics), add an "Analytics" block below.
+ * the site actually does today: no cookies, no analytics, third parties only for playback, and
+ * the guest application's Google Form, loaded only on request. If analytics are added (e.g. Vercel Web Analytics), add an "Analytics" block below.
  */
 export default function PrivacyPage() {
   return (
@@ -41,8 +41,9 @@ export default function PrivacyPage() {
           <NoticeSection heading="The short version">
             <p>
               This website doesn&apos;t use cookies, doesn&apos;t run analytics or advertising
-              trackers, and has no accounts or forms, so it doesn&apos;t ask you for any personal
-              information. A few outside services are involved in playing episodes, explained below.
+              trackers, and has no accounts. The only form is the optional guest application, run by
+              Google Forms, which loads only if you open it. A few outside services are involved in
+              playing episodes, explained below.
             </p>
           </NoticeSection>
 
@@ -103,6 +104,25 @@ export default function PrivacyPage() {
             <p>
               Links to Apple Podcasts, Spotify, YouTube and Instagram open in a new tab. Those
               services have their own privacy policies.
+            </p>
+          </NoticeSection>
+
+          <NoticeSection heading="Guest application form">
+            <p>
+              The guest application on the{" "}
+              <Link href="/be-a-guest" className={linkClass}>
+                Be a guest
+              </Link>{" "}
+              page is a Google Form. Nothing is sent to Google until you press the button to open
+              it. Answers you submit are collected by Google Forms and handled as the guest privacy
+              notice explains.
+            </p>
+            <p>
+              See the{" "}
+              <ExternalLink href="https://policies.google.com/privacy" className={linkClass}>
+                Google privacy policy
+              </ExternalLink>
+              .
             </p>
           </NoticeSection>
 

@@ -1,6 +1,7 @@
 /**
  * "Be a guest" page copy, written by the host (Oct 28, 2026). Kept word for word; the page only
- * arranges it. The facts in `atAGlance` repeat what the sections below say, for scanning.
+ * arranges it. The second inquiry paragraph was reworded with the host's approval when the
+ * application form was added. The facts in `atAGlance` repeat what the sections below say, for scanning.
  */
 export const guestPage = {
   title: "Everyone has something worth talking about.",
@@ -127,7 +128,7 @@ export const guestInquiry = {
   heading: "Interested in joining the conversation?",
   paragraphs: [
     "I'd love to hear from you!",
-    "Send me an email introducing yourself and telling me a little about what you'd be interested in discussing.",
+    "Fill out the short guest application below, or, if you'd rather, send me an email introducing yourself and telling me a little about what you'd be interested in discussing.",
     "It doesn't need to be a formal pitch. Just tell me who you are, what's on your mind, and why you'd like to have the conversation.",
   ],
   subject: "The Bottom Left Pane — Guest Inquiry",

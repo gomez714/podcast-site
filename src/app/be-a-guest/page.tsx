@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
+import { GuestApplication } from "@/components/guest/GuestApplication";
 import { Section, SectionHeading } from "@/components/layout/Section";
 import { ButtonLink } from "@/components/ui/button-link";
 import { SharePageButton } from "@/components/ui/share-page-button";
@@ -39,8 +40,8 @@ const mailto = contactEmail
 /**
  * Be a guest: how appearing on the show works, in the host's own words (`src/content/guest.ts`).
  * Everything stays visible rather than folded into accordions, because the consent and publishing
- * terms are things a guest should read, not have to find. The inquiry is an email, like /contact,
- * so the site still collects no personal data.
+ * terms are things a guest should read, not have to find. Guests apply through the host's Google
+ * Form (`GuestApplication`, loaded only on request) or by email; the site itself stores nothing.
  */
 export default function BeAGuestPage() {
   return (
@@ -61,7 +62,7 @@ export default function BeAGuestPage() {
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <ButtonLink href="#guest-inquiry" variant="primary">
-              How to get in touch <span aria-hidden="true">↓</span>
+              Apply to be a guest <span aria-hidden="true">↓</span>
             </ButtonLink>
             <ButtonLink href="#guest-who" variant="outline-on-dark">
               How it works <span aria-hidden="true">↓</span>
@@ -136,12 +137,14 @@ export default function BeAGuestPage() {
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
+          <GuestApplication className="mt-9" />
         </div>
 
         <div className="rounded-lg bg-pale p-6 text-navy sm:p-8">
+          <h3 className="eyebrow text-navy">Prefer email?</h3>
           {mailto ? (
             <>
-              <dl className="space-y-4">
+              <dl className="mt-5 space-y-4">
                 <div>
                   <dt className="eyebrow text-slate">Email</dt>
                   <dd className="mt-1.5 text-lg font-extrabold break-all">{contactEmail}</dd>
@@ -151,7 +154,11 @@ export default function BeAGuestPage() {
                   <dd className="mt-1.5 text-base font-bold">{guestInquiry.subject}</dd>
                 </div>
               </dl>
-              <ButtonLink href={mailto} variant="solid" className="mt-7 w-full sm:w-auto">
+              <ButtonLink
+                href={mailto}
+                variant="outline-on-light"
+                className="mt-7 w-full sm:w-auto"
+              >
                 Email a guest inquiry
               </ButtonLink>
               <p className="mt-3 text-sm text-slate">

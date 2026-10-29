@@ -133,6 +133,7 @@ const sections: { id: string; heading: string; body: ReactNode }[] = [
         <List
           items={[
             "Casting Call Club, where we may post calls for guests. Submissions there stay on Casting Call Club under its own privacy policy for as long as the project post is active; we only take your email address or preferred contact details from it.",
+            "Google Forms, for the guest application on our website and, if you're invited, the appearance and recording release.",
             "Riverside, for remote recordings.",
             "Email providers, for communications.",
             "Podcast hosting and video platforms, for publication.",

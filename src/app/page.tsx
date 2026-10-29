@@ -65,7 +65,7 @@ export default function HomePage() {
         tone="dark"
         id="revival"
         aria-labelledby="revival-heading"
-        containerClassName="grid items-center gap-7 md:grid-cols-[1fr_auto]"
+        containerClassName="grid items-center gap-9 lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)] lg:gap-16"
       >
         <div>
           <SectionHeading id="revival-heading" eyebrow="02 / A new chapter">
@@ -77,9 +77,32 @@ export default function HomePage() {
             that started it all.
           </p>
         </div>
-        <ButtonLink href="/episodes" className="justify-self-start">
-          Visit the archive <span aria-hidden="true">→</span>
-        </ButtonLink>
+
+        {/* Two ways in (host's choice, Oct 28, 2026): listeners catch up, future guests apply.
+            The archive stays the section's one button. */}
+        <ul className="w-full max-w-md divide-y divide-line-dark rounded-lg border border-line-dark bg-white/5 px-7 lg:max-w-none">
+          <li className="grid justify-items-start gap-3 py-7">
+            <p className="text-[0.6875rem] font-extrabold tracking-[0.2em] text-ice uppercase">
+              Catch up
+            </p>
+            <p className="text-sm text-pale">Listen to every episode so far.</p>
+            <ButtonLink href="/episodes">
+              Visit the archive <span aria-hidden="true">→</span>
+            </ButtonLink>
+          </li>
+          <li className="grid justify-items-start gap-3 py-7">
+            <p className="text-[0.6875rem] font-extrabold tracking-[0.2em] text-ice uppercase">
+              Join in
+            </p>
+            <p className="text-sm text-pale">Have a story worth sharing?</p>
+            <Link
+              href="/be-a-guest"
+              className="inline-flex min-h-11 items-center gap-2 text-sm font-extrabold text-white underline decoration-ice decoration-2 underline-offset-[6px] hover:decoration-white"
+            >
+              Find out how to be a guest <span aria-hidden="true">→</span>
+            </Link>
+          </li>
+        </ul>
       </Section>
 
       <FeaturedEpisodes />

@@ -17,6 +17,18 @@ export const siteConfig = {
  */
 export const contactEmail: string | undefined = "bottomleftpane@gmail.com";
 
+/**
+ * The guest application, a Google Form owned by the host (Oct 28, 2026). It needs no Google
+ * sign-in. `embedHeight` is Google's suggested iframe height at 640px wide. /privacy and
+ * /guest-privacy disclose it, so update them if the form moves to another service.
+ */
+export const guestApplicationForm = {
+  url: "https://docs.google.com/forms/d/e/1FAIpQLSfuxt_wcvPhnNLDR74nmjDB25bJN5R0ki3oAMzp1Wlx7Z0_UA/viewform",
+  embedUrl:
+    "https://docs.google.com/forms/d/e/1FAIpQLSfuxt_wcvPhnNLDR74nmjDB25bJN5R0ki3oAMzp1Wlx7Z0_UA/viewform?embedded=true",
+  embedHeight: 1083,
+} as const;
+
 export type NavItem = { label: string; href: string };
 
 /** Header navigation (spec §5). "Find the show" is rendered separately as the outlined call to action. */
